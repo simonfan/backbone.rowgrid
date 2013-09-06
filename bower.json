@@ -1,0 +1,10 @@
+{
+  "name": "backbone.rowgrid",
+  "version": "0.0.1",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "qunit": "latest"
+  },
+  "main": "backbone.rowgrid.js"
+}
