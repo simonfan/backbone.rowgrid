@@ -24,34 +24,6 @@ function(CollectionView          , $      ) {
 		 * Method called after each li is added.
 		 */
 		afterAdd: function(artwork, $li) {
-
-				// get the orientation data.
-			var orientationData = this.orientationData(artwork.get('image'));
-
-			// add unaligned class to current li.
-			$li.addClass('unaligned')
-				// set data orientation-data
-				.data('orientation-data', orientationData);
-
-			var _this = this,
-				$unaligned = this.$el.find('.unaligned'),
-
-				elementsToAlign = [],
-				spaceCount = 0;
-
-			$unaligned.each(function(index, li) {
-
-				var liSpacing = $(li).data('orientation-data').spacing;
-
-				if (spaceCount + liSpacing > _this.rowSize) {
-					_this.align($(elementsToAlign));
-					return;
-				} else {
-					spaceCount += liSpacing;
-					elementsToAlign.push(li);
-				}
-			});
-
 		},
 
 		/**
