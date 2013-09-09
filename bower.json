@@ -2,6 +2,7 @@
   "name": "backbone.rowgrid",
   "version": "0.0.1",
   "dependencies": {
+    "backbone.collectionview": "simonfan/backbone.collectionview"
   },
   "devDependencies": {
     "qunit": "latest"

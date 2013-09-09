@@ -7,11 +7,13 @@ require.config({
 		'underscore': 'components/underscore/underscore',
 		'backbone': 'components/backbone/backbone',
 
-		'backbone.listview': 'components/backbone.listview/backbone.listview',
+		'_.asynch': 'components/_.asynch/_.asynch',
+
+		'backbone.collectionview': 'components/backbone.collectionview/backbone.collectionview',
 
 		'backbone.db': 'components/backbone.db/backbone.db',
 
-		'backbone.grid': '../backbone.grid',
+		'backbone.rowgrid': '../backbone.rowgrid',
 
 
 		// DEMO

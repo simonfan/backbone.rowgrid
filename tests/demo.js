@@ -1,12 +1,12 @@
-define(['backbone.grid','backbone','jquery','backbone.db'],
-function(Grid          , Backbone , $      , BackboneDB  ) {
+define(['backbone.rowgrid','backbone','jquery','backbone.db'],
+function(RowGrid             , Backbone , $      , BackboneDB  ) {
 
 	/**
 	 * Build a jsonp database using Nail on Wall's database.
 	 */
 	var db = window.db = new BackboneDB([], {
 		url: 'http://nail/cms/rest/artwork',
-		pageLength: 100,
+		pageLength: 50,
 		ajaxOptions: {
 			dataType: 'jsonp'
 		},
@@ -51,8 +51,8 @@ function(Grid          , Backbone , $      , BackboneDB  ) {
 			/**
 			 * The grid view
 			 */
-			var grid = window.grid = new Grid({
-				rowSize: 5,
+			var grid = window.grid = new RowGrid({
+				rowSize: 3,
 
 				el: $('#item-list-grid'),
 				collection: db,
@@ -61,7 +61,9 @@ function(Grid          , Backbone , $      , BackboneDB  ) {
 					return model.attributes;
 				},
 				itemTemplate: function(data) {
-					return '<li id='+ data.id +'>' + data.title + '</li>';
+					console.log(data.image.thumbnail)
+
+					return '<div id='+ data.id +' class="col-md-4"><img src="'+ data.image.thumbnail +'">'+ data.id + ' ' + data.title + '</div>';
 				},
 				itemSelector: function(data) {
 					return '#'+ data.id;

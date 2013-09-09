@@ -1,8 +1,99 @@
 /** 
  * Defines how a collection of artworks should be displayed.
  */
-define(['backbone.collectionview','jquery'],
-function(CollectionView          , $      ) {
+define(['backbone.collectionview','jquery','backbone'],
+function(CollectionView          , $      , Backbone ) {
+
+	var RowGrid = CollectionView.extend({
+		initialize: function(options) {
+
+			/**
+			 * Save row size before calling collectionview initialize method.
+			 */
+			this.rowSize = options.rowSize || 3;
+
+			// initialize collection view
+			CollectionView.prototype.initialize.call(this, options);
+
+			/**
+			 * bind methods
+			 */
+			_.bindAll(this, 'rowData','rowTemplate','rowSelector','_buildNewRow');
+		},
+
+		/**
+		 * overwrite add method
+		 */
+		add: function(model, $el) {
+				// find the incomplete row
+				// or build a new one
+			var $incomplete = this.$container.children('.__incomplete');
+
+			// if $incomplete has length 0, create a new row
+			$incomplete = $incomplete.length > 0 ? $incomplete : this._buildNewRow();
+
+			//console.log($incomplete)
+
+			$incomplete.append($el);
+
+			/**
+			 * Remove incomplete class if the row's children count equals the rowSize
+			 */
+			if ($incomplete.children().length >= this.rowSize) {
+				$incomplete.removeClass('__incomplete');
+			}
+		},
+
+		/**
+		 * Methods to be overwritten:
+		 */
+
+		/**
+		 * gets data for rendering a row
+		 */
+		rowData: function($container) {
+			return {
+				no: $container.children().length
+			};
+		},
+
+		/**
+		 * renders a row wrapper.
+		 */
+		rowTemplate: function(data) {
+			return '<div class="row row-' + data.no + '"></div>';
+		},
+
+		/**
+		 * returns a jq selector string to get a row at a given position
+		 */
+		rowSelector: function(no) {
+			return '.row-' + no;
+		},
+
+
+
+		/**
+		 * Internal methods
+		 */
+		_buildNewRow: function() {
+			var data = this.rowData(this.$container),
+				rowHtml = this.rowTemplate(data);
+
+			return $(rowHtml).addClass('__incomplete').appendTo(this.$container);
+		},
+
+
+		/**
+		 * API
+		 */
+		retrieveRow: function(no) {
+			return this.$container.find(this.rowSelector(no));
+		},
+	});
+
+
+	return RowGrid;
 
 	var RowGrid = Backbone.RowGrid = CollectionView.extend({
 		initialize: function(options) {
@@ -24,88 +115,7 @@ function(CollectionView          , $      ) {
 		 * Method called after each li is added.
 		 */
 		afterAdd: function(artwork, $li) {
-		},
 
-		/**
-		 * Takes a list of jquery elements and sets their dimensions.
-		 */
-		align: function($els) {
-
-			console.log('align');
-			console.log($els);
-
-
-			var _this = this,
-				frameWidth = this.$el.width() || $(window).width(),
-				tileWidth = frameWidth / this.rowSize,
-				imgLoadDefers = _.map($els, function(el) {
-					return _this._getImgHeight($(el).find('img'));
-				});
-
-
-			$els.removeClass('unaligned')
-				.addClass('aligning');
-
-			$els.each(function(index, el) {
-
-				var $el = $(el),
-					orientationData = $el.data('orientation-data'),
-					spacing = orientationData.spacing,
-					orientation = orientationData.orientation;
-
-				$el.width( tileWidth * spacing );
-			});
-
-
-			return $.when.apply(null, imgLoadDefers)
-						.then(function() {
-							var heights = _.map($els, function(el) { return $(el).height(); }),
-								highest = _.max(heights);
-
-							_.each($els, function(el) {
-
-								var $el = $(el);
-								$el.height(highest);
-
-							});
-
-							$els.animate({ opacity: 1 })
-								.removeClass('aligning');
-						});
-
-
-		},
-
-		_getImgHeight: function($img) {
-			var defer = $.Deferred(),
-				h = $img.height(),
-				w = $img.width();
-
-			if (h && w) {
-				defer.resolve({
-					height: h,
-					width: w
-				});
-
-			} else {
-
-				$img.load(function() {
-					defer.resolve({
-						height: $img.height(),
-						width: $img.width()
-					});
-				});
-
-				$img.error(function() {
-					defer.resolve({
-						height: 0,
-						width: 0,
-					})
-				});
-
-			}
-
-			return defer;
 		},
 
 		/**
@@ -181,7 +191,4 @@ function(CollectionView          , $      ) {
 		},
 
 	});
-
-
-	return RowGrid;
 });
