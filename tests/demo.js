@@ -1,5 +1,5 @@
 define(['backbone.rowgrid','backbone','jquery','backbone.db'],
-function(RowGrid             , Backbone , $      , BackboneDB  ) {
+function(RowGrid          , Backbone , $      , BackboneDB  ) {
 
 	/**
 	 * Build a jsonp database using Nail on Wall's database.
@@ -48,28 +48,42 @@ function(RowGrid             , Backbone , $      , BackboneDB  ) {
 	db.request({})
 		.then(function() {
 
-			/**
-			 * The grid view
-			 */
-			var grid = window.grid = new RowGrid({
-				rowSize: 3,
+			var ExtendedRowGrid = RowGrid.extend({
 
-				el: $('#item-list-grid'),
-				collection: db,
+
+				beforeAdd: function(model, $el) {
+					var $img = $el.find('img');
+
+					$el.css({ opacity: 0});
+
+					$img.load(function() {
+						console.log($el.css('opacity'))
+							$el.animate({ opacity: 1 }, { duration: 600 });
+						})
+				},
+
+				afterAdd: function(model, $el) {},
 
 				itemData: function(model) {
 					return model.attributes;
 				},
 				itemTemplate: function(data) {
-					console.log(data.image.thumbnail)
-
 					return '<div id='+ data.id +' class="col-md-4"><img src="'+ data.image.thumbnail +'">'+ data.id + ' ' + data.title + '</div>';
 				},
 				itemSelector: function(data) {
 					return '#'+ data.id;
 				}
 
+			})
 
+			/**
+			 * The grid view
+			 */
+			var grid = window.grid = new ExtendedRowGrid({
+				rowSize: 3,
+
+				el: $('#item-list-grid'),
+				collection: db,
 			})
 
 		});
