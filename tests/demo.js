@@ -5,7 +5,7 @@ function(RowGrid          , Backbone , $      , BackboneDB  ) {
 	 * Build a jsonp database using Nail on Wall's database.
 	 */
 	var db = window.db = new BackboneDB([], {
-		url: 'http://nail/cms/rest/artwork',
+		url: 'http://nailonwall.com/cms/rest/artwork',
 		pageLength: 50,
 		ajaxOptions: {
 			dataType: 'jsonp'
