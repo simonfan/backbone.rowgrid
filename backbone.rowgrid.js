@@ -10,7 +10,7 @@ function(CollectionView          , $      , Backbone ) {
 			/**
 			 * Save row size before calling collectionview initialize method.
 			 */
-			this.rowSize = options.rowSize || 3;
+			this.rowSize = options.rowSize || this.rowSize;
 
 			// initialize collection view
 			CollectionView.prototype.initialize.call(this, options);
